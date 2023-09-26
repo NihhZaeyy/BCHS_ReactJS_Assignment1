@@ -1,10 +1,41 @@
-import React from 'react'
+import React , { useState , useEffect} from 'react'
 import { Link } from 'react-router-dom'
-import TrashButton from '../Components/TrashButton'
+import CartList from '../Components/CartList'
+import CartPrice from '../Components/CartPrice'
+import { getCartItems } from '../Utils/cartStorage';
 
-import photo1 from '/Assets/foods/apem.jpg'
 
 const FoodCart = () => {
+  const [totalPrice, setTotalPrice] = useState(0);
+  const [totalItems, setTotalItems] = useState(0);
+  const [cartData, setCartData] = useState([]);
+  const [paymentAmount, setPaymentAmount] = useState('');
+
+  
+
+  useEffect(() => {
+    const cartItems = getCartItems();
+    setCartData(cartItems);
+
+    // Calculate totalPrice and totalItems
+    const newTotalPrice = cartItems.reduce((total, item) => total + item.price * item.quantity, 0);
+    const newTotalItems = cartItems.reduce((total, item) => total + item.quantity, 0);
+    setTotalPrice(newTotalPrice);
+    setTotalItems(newTotalItems);
+}, []);
+
+  const handlePaymentSubmit = () => {
+    if (parseInt(paymentAmount) === totalPrice && parseInt(paymentAmount) !== 0) {
+      // Payment amount matches total price, show the success message
+      alert('Terimakasih atas pembayarannya, enjoy your food!');
+    } else {
+      // Payment amount does not match total price, show an error message
+      alert('Pembayaran tidak valid. Harap masukkan jumlah yang sesuai dengan total harga.');
+    }
+  };
+
+  
+
   return (
     <div className='w-screen'>
       <section id='nav-cart'>
@@ -19,51 +50,23 @@ const FoodCart = () => {
       </section>
       <section id='cartlist'>
         <div className='flex p-10'>
-            <div id='container' className='w-[700px] flex flex-col gap-5 pr-5 border-r-2'>
-                <div className='flex gap-2'>
-                    <img className='w-[200px]' src={photo1} alt="" />
-                    <div>
-                        <div className='flex justify-between items-center'>
-                            <h3>Apem</h3>
-                            <TrashButton />
-                        </div>
-                        <p className='line-clamp-2 pr-10'>Apem (also known as appam in its native India) is a food made from rice flour that is left overnight by mixing eggs, coconut milk, sugar and tape and a little salt then burned or steamed. The Ngapem tradition was started by the Kanoman Palace in Cirebon, since the time of Sunan Gunung Jati as a form of spreading Islam in Java.</p>
-                        <p>Price : Rp. 10000</p>
-                    </div>
-                </div>
-                <div className='flex gap-2'>
-                    <img className='w-[200px]' src={photo1} alt="" />
-                    <div>
-                        <div className='flex justify-between items-center'>
-                            <h3>Apem</h3>
-                            <TrashButton />
-                        </div>
-                        <p className='line-clamp-2 pr-10'>Apem (also known as appam in its native India) is a food made from rice flour that is left overnight by mixing eggs, coconut milk, sugar and tape and a little salt then burned or steamed. The Ngapem tradition was started by the Kanoman Palace in Cirebon, since the time of Sunan Gunung Jati as a form of spreading Islam in Java.</p>
-                        <p>Price : Rp. 10000</p>
-                    </div>
-                </div>
-                <div className='flex gap-2'>
-                    <img className='w-[200px]' src={photo1} alt="" />
-                    <div>
-                        <div className='flex justify-between items-center'>
-                            <h3>Apem</h3>
-                            <TrashButton />
-                        </div>
-                        <p className='line-clamp-2 pr-10'>Apem (also known as appam in its native India) is a food made from rice flour that is left overnight by mixing eggs, coconut milk, sugar and tape and a little salt then burned or steamed. The Ngapem tradition was started by the Kanoman Palace in Cirebon, since the time of Sunan Gunung Jati as a form of spreading Islam in Java.</p>
-                        <p>Price : Rp. 10000</p>
-                    </div>
-                </div>
+            <div id='container' className='flex gap-5 pr-5'>
+                <CartList cartData={cartData} setCartData={setCartData} />
+                <CartPrice totalPrice={totalPrice} totalItems={totalItems} />
             </div>
-            <div className='px-5 w-[600px] flex flex-col gap-5'>
-                <h2>Payment</h2>
-                <div className='flex justify-between items-center'>
-                    <p>Total Price : Rp. 30000</p>
-                    <p>Total Item : 3</p>
-                </div>
-                <div>
-                    <input></input>
-                </div>
+        </div>
+        <div className='flex justify-center items-center gap-10'>
+            <div>
+                <span className='mr-3'>Rp.</span>
+                <input
+                className='px-3 py-2 border-2 '
+                type='number'
+                placeholder='Enter payment amount'
+                value={paymentAmount}
+                onChange={(e) => setPaymentAmount(e.target.value)}
+                />
             </div>
+            <button className='px-3 py-1 rounded-lg bg-button text-white' onClick={handlePaymentSubmit}>Submit Payment</button>
         </div>
       </section>
     </div>
