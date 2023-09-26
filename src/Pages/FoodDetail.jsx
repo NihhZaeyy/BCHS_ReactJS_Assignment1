@@ -5,6 +5,7 @@ import { useParams } from "react-router-dom";
 import axiosFood from "../Services/apiFood";
 import CartButton from "../Components/CartButton";
 import OrderButton from "../Components/OrderButton";
+import ShareButton from "../Components/ShareButton";
 
 import { addToCart } from "../Utils/cartStorage";
 
@@ -72,10 +73,7 @@ const FoodDetail = () => {
               <div>
                 <span className="font-Poppins">Food</span>
               </div>
-              <button className="flex items-center bg-button2 w-[100px] px-4 py-2 rounded-xl">
-                <p className="text-button me-1 font-Poppins">Share </p>
-                <i className="bx bx-share-alt text-[20px] text-button"></i>
-              </button>
+              <ShareButton />
             </div>
 
             <div className="mb-10">
